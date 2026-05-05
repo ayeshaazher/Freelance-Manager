@@ -10,6 +10,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'signup_model.dart';
 export 'signup_model.dart';
 
@@ -809,6 +810,85 @@ class _SignupWidgetState extends State<SignupWidget> {
                               ),
                             ),
                           ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                      EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 0.0),
+                      child: InkWell(
+                        splashColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        onTap: () async {
+                          GoRouter.of(context).prepareAuthEvent();
+                          final user =
+                          await authManager.signInWithApple(context);
+                          if (user == null) {
+                            return;
+                          }
+
+                          context.goNamedAuth(
+                            ProfessionsWidget.routeName,
+                            context.mounted,
+                            queryParameters: {
+                              'userName': serializeParam(
+                                user.displayName ?? '',
+                                ParamType.String,
+                              ),
+                              'page': serializeParam(
+                                'oauth',
+                                ParamType.String,
+                              ),
+                            }.withoutNulls,
+                          );
+                        },
+                        child: Container(
+                          width: MediaQuery.sizeOf(context).width * 0.85,
+                          height: 50.0,
+                          decoration: BoxDecoration(
+                            color: FlutterFlowTheme.of(context).primaryBackground,
+                            borderRadius: BorderRadius.circular(14.0),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.apple,
+                                size: 24.0,
+                                color: FlutterFlowTheme.of(context).primaryText,
+                              ),
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    5.0, 0.0, 0.0, 0.0),
+                                child: Text(
+                                  'Continue with Apple',
+                                  style: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .override(
+                                    font: GoogleFonts.inter(
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .fontStyle,
+                                    ),
+                                    fontSize: 16.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontStyle,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
