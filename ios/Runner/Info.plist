@@ -50,11 +50,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>This app uses the camera to let you capture photos or videos for tasks and updates.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>This app uses the microphone to record audio in videos or task-related content.</string>
+    <string>This app uses the camera to let you capture photos or videos for tasks and updates.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app uses the microphone to record audio in videos or task-related content.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>In order to upload data, this app requires permission to access the photo library.</string>
+	<string>This app allows you to upload photos from your library to attach to profile</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
