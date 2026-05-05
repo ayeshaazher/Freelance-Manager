@@ -64,6 +64,9 @@ class AddTaskModel extends FlutterFlowModel<AddTaskWidget> {
   // Stores action output result for [Custom Action - giveID] action in Button widget.
   int? taskId;
 
+  // Tracks whether the user attempted to submit without selecting a task group.
+  bool taskGroupSubmitAttempted = false;
+
   @override
   void initState(BuildContext context) {
     colorContainerModel = createModel(context, () => ColorContainerModel());

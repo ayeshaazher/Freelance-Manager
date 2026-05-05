@@ -1,3 +1,4 @@
+import '../settings/settings_widget.dart';
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/backend/sqlite/sqlite_manager.dart';
@@ -141,7 +142,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                             size: 30.0,
                           ),
                           onPressed: () {
-                            print('IconButton pressed ...');
+                            Navigator.pop(context);
                           },
                         ),
                       ),
@@ -254,19 +255,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                           hoverColor: Colors.transparent,
                           highlightColor: Colors.transparent,
                           onTap: () async {
-                            context.pushNamed(
-                              ProfessionsWidget.routeName,
-                              queryParameters: {
-                                'userName': serializeParam(
-                                  currentUserDisplayName,
-                                  ParamType.String,
-                                ),
-                                'page': serializeParam(
-                                  'Next',
-                                  ParamType.String,
-                                ),
-                              }.withoutNulls,
-                            );
+                            context.pushNamed(SettingsWidget.routeName);
                           },
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
@@ -417,42 +406,53 @@ class _HomeWidgetState extends State<HomeWidget> {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Align(
-                              alignment: AlignmentDirectional(-1.0, -1.0),
-                              child: Text(
-                                'Theme',
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                      font: GoogleFonts.inter(
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Icons.dark_mode_rounded
+                                      : Icons.light_mode_rounded,
+                                  color: Color(0xFF848485),
+                                  size: 20.0,
+                                ),
+                                SizedBox(width: 8.0),
+                                Text(
+                                  Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? 'Dark Mode'
+                                      : 'Light Mode',
+                                  style: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .override(
+                                        font: GoogleFonts.inter(
+                                          fontWeight: FontWeight.w500,
+                                          fontStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .bodyMedium
+                                                  .fontStyle,
+                                        ),
+                                        fontSize: 15.0,
+                                        letterSpacing: 0.0,
                                         fontWeight: FontWeight.w500,
                                         fontStyle: FlutterFlowTheme.of(context)
                                             .bodyMedium
                                             .fontStyle,
                                       ),
-                                      fontSize: 15.0,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.w500,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                              ),
+                                ),
+                              ],
                             ),
                             Switch.adaptive(
-                              value: _model.switchValue!,
-                              onChanged: (newValue) async {
-                                safeSetState(
-                                    () => _model.switchValue = newValue!);
-                                if (newValue!) {
-                                  setDarkModeSetting(context, ThemeMode.dark);
-                                  FFAppState().mood = false;
-                                  FFAppState().update(() {});
-                                } else {
-                                  setDarkModeSetting(context, ThemeMode.light);
-                                  FFAppState().mood = false;
-                                  FFAppState().update(() {});
-                                }
+                              value: Theme.of(context).brightness ==
+                                  Brightness.dark,
+                              onChanged: (newValue) {
+                                setDarkModeSetting(
+                                  context,
+                                  newValue ? ThemeMode.dark : ThemeMode.light,
+                                );
+                                FFAppState().mood = false;
+                                FFAppState().update(() {});
                               },
                               activeColor: Colors.white,
                               activeTrackColor: Color(0xFF848485),

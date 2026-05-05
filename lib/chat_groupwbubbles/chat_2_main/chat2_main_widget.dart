@@ -257,14 +257,19 @@ class _Chat2MainWidgetState extends State<Chat2MainWidget> {
                                       future: FFAppState().userDocQuery(
                                         uniqueQueryKey:
                                             listViewChatsRecord.reference.id,
-                                        requestFn: () =>
-                                            UsersRecord.getDocumentOnce(
-                                                listViewChatsRecord.users
-                                                    .where((e) =>
-                                                        e !=
-                                                        currentUserReference)
-                                                    .toList()
-                                                    .firstOrNull!),
+                                        requestFn: () {
+                                          final otherUser = listViewChatsRecord
+                                              .users
+                                              .where((e) =>
+                                                  e != currentUserReference)
+                                              .toList()
+                                              .firstOrNull;
+                                          if (otherUser == null)
+                                            return Future.error(
+                                                'No other user found');
+                                          return UsersRecord.getDocumentOnce(
+                                              otherUser);
+                                        },
                                       ),
                                       builder: (context, snapshot) {
                                         // Customize what your widget looks like when it's loading.
@@ -283,6 +288,9 @@ class _Chat2MainWidgetState extends State<Chat2MainWidget> {
                                               ),
                                             ),
                                           );
+                                        } else if (snapshot.hasError) {
+                                          return ErrorWidget(
+                                              snapshot.error!); // or some fallback widget
                                         }
 
                                         final rowUsersRecord = snapshot.data!;
@@ -491,7 +499,9 @@ class _Chat2MainWidgetState extends State<Chat2MainWidget> {
                                                             dateTimeFormat(
                                                                 "relative",
                                                                 listViewChatsRecord
-                                                                    .lastMessageTime!),
+                                                                        .lastMessageTime ??
+                                                                    DateTime
+                                                                        .now()),
                                                             textAlign:
                                                                 TextAlign.start,
                                                             style: FlutterFlowTheme

@@ -412,7 +412,7 @@ class _TaskBottomSheetWidgetState extends State<TaskBottomSheetWidget> {
                             safeSetState(
                                 () => _model.studyTask = !_model.studyTask);
                             _model.freelancer = false;
-                            _model.select = 'Studey Tasks';
+                            _model.select = 'Study Tasks';
                             _model.onJobTask = false;
                             _model.onHomeTask = false;
                             safeSetState(() {});

@@ -173,19 +173,19 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                               style: FlutterFlowTheme.of(context)
                                   .bodyMedium
                                   .override(
-                                    font: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w600,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                                    fontSize: 22.0,
-                                    letterSpacing: 0.0,
-                                    fontWeight: FontWeight.w600,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
+                                font: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontStyle,
+                                ),
+                                fontSize: 22.0,
+                                letterSpacing: 0.0,
+                                fontWeight: FontWeight.w600,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontStyle,
+                              ),
                             ),
                             InkWell(
                               splashColor: Colors.transparent,
@@ -231,9 +231,14 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                 );
                               },
                             ).then((value) => safeSetState(
-                                () => _model.taskGroupName = value));
+                                    () => _model.taskGroupName = value));
 
                             _model.textOutPut = _model.taskGroupName;
+                            // Clear the error once a group is selected.
+                            if (_model.textOutPut != null &&
+                                _model.textOutPut!.isNotEmpty) {
+                              _model.taskGroupSubmitAttempted = false;
+                            }
                             safeSetState(() {});
 
                             safeSetState(() {});
@@ -251,11 +256,20 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                 color: FlutterFlowTheme.of(context)
                                     .primaryBackground,
                                 borderRadius: BorderRadius.circular(14.0),
+                                border: (_model.taskGroupSubmitAttempted &&
+                                    (_model.textOutPut == null ||
+                                        _model.textOutPut!.isEmpty))
+                                    ? Border.all(
+                                  color:
+                                  FlutterFlowTheme.of(context).error,
+                                  width: 1.5,
+                                )
+                                    : null,
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   Padding(
                                     padding: EdgeInsetsDirectional.fromSTEB(
@@ -265,7 +279,7 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                       children: [
                                         ClipRRect(
                                           borderRadius:
-                                              BorderRadius.circular(0.0),
+                                          BorderRadius.circular(0.0),
                                           child: Image.asset(
                                             'assets/images/Group_7.png',
                                             width: 24.0,
@@ -275,40 +289,40 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                         ),
                                         Padding(
                                           padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  8.0, 7.0, 0.0, 5.0),
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              8.0, 7.0, 0.0, 5.0),
                                           child: Column(
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment:
-                                                MainAxisAlignment.start,
+                                            MainAxisAlignment.start,
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 'Task Group',
                                                 style:
-                                                    FlutterFlowTheme.of(context)
+                                                FlutterFlowTheme.of(context)
+                                                    .bodyMedium
+                                                    .override(
+                                                  font:
+                                                  GoogleFonts.inter(
+                                                    fontWeight:
+                                                    FontWeight.w600,
+                                                    fontStyle:
+                                                    FlutterFlowTheme.of(
+                                                        context)
                                                         .bodyMedium
-                                                        .override(
-                                                          font:
-                                                              GoogleFonts.inter(
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
+                                                        .fontStyle,
+                                                  ),
+                                                  letterSpacing: 0.0,
+                                                  fontWeight:
+                                                  FontWeight.w600,
+                                                  fontStyle:
+                                                  FlutterFlowTheme.of(
+                                                      context)
+                                                      .bodyMedium
+                                                      .fontStyle,
+                                                ),
                                               ),
                                               Text(
                                                 valueOrDefault<String>(
@@ -316,34 +330,34 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                                   'Select Task Group',
                                                 ),
                                                 style:
-                                                    FlutterFlowTheme.of(context)
+                                                FlutterFlowTheme.of(context)
+                                                    .bodyMedium
+                                                    .override(
+                                                  font:
+                                                  GoogleFonts.inter(
+                                                    fontWeight:
+                                                    FlutterFlowTheme.of(
+                                                        context)
                                                         .bodyMedium
-                                                        .override(
-                                                          font:
-                                                              GoogleFonts.inter(
-                                                            fontWeight:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontWeight,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontWeight,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
+                                                        .fontWeight,
+                                                    fontStyle:
+                                                    FlutterFlowTheme.of(
+                                                        context)
+                                                        .bodyMedium
+                                                        .fontStyle,
+                                                  ),
+                                                  letterSpacing: 0.0,
+                                                  fontWeight:
+                                                  FlutterFlowTheme.of(
+                                                      context)
+                                                      .bodyMedium
+                                                      .fontWeight,
+                                                  fontStyle:
+                                                  FlutterFlowTheme.of(
+                                                      context)
+                                                      .bodyMedium
+                                                      .fontStyle,
+                                                ),
                                               ),
                                             ].divide(SizedBox(height: 5.0)),
                                           ),
@@ -367,9 +381,36 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                           ),
                         ),
                       ),
+                      // Task group validation error
+                      if (_model.taskGroupSubmitAttempted &&
+                          (_model.textOutPut == null ||
+                              _model.textOutPut!.isEmpty))
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                              24.0, 4.0, 0.0, 8.0),
+                          child: Align(
+                            alignment: AlignmentDirectional(-1.0, 0.0),
+                            child: Text(
+                              'Please select a task group',
+                              style: FlutterFlowTheme.of(context)
+                                  .bodySmall
+                                  .override(
+                                font: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w400,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .bodySmall
+                                      .fontStyle,
+                                ),
+                                color: FlutterFlowTheme.of(context).error,
+                                fontSize: 12.0,
+                                letterSpacing: 0.0,
+                              ),
+                            ),
+                          ),
+                        ),
                       Padding(
                         padding:
-                            EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 15.0),
+                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 15.0),
                         child: Material(
                           color: Colors.transparent,
                           elevation: 2.0,
@@ -400,20 +441,20 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                         style: FlutterFlowTheme.of(context)
                                             .bodyMedium
                                             .override(
-                                              font: GoogleFonts.inter(
-                                                fontWeight: FontWeight.w600,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                              letterSpacing: 0.0,
-                                              fontWeight: FontWeight.w600,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
-                                            ),
+                                          font: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w600,
+                                            fontStyle:
+                                            FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontStyle,
+                                          ),
+                                          letterSpacing: 0.0,
+                                          fontWeight: FontWeight.w600,
+                                          fontStyle:
+                                          FlutterFlowTheme.of(context)
+                                              .bodyMedium
+                                              .fontStyle,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -423,80 +464,80 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                           0.0, 0.0, 5.0, 0.0),
                                       child: Container(
                                         width:
-                                            MediaQuery.sizeOf(context).width *
-                                                1.0,
+                                        MediaQuery.sizeOf(context).width *
+                                            1.0,
                                         child: TextFormField(
                                           controller:
-                                              _model.taskNameTextController,
+                                          _model.taskNameTextController,
                                           focusNode: _model.taskNameFocusNode,
                                           autofocus: false,
                                           obscureText: false,
                                           decoration: InputDecoration(
                                             isDense: true,
                                             labelStyle:
-                                                FlutterFlowTheme.of(context)
+                                            FlutterFlowTheme.of(context)
+                                                .labelMedium
+                                                .override(
+                                              font: GoogleFonts.inter(
+                                                fontWeight:
+                                                FlutterFlowTheme.of(
+                                                    context)
                                                     .labelMedium
-                                                    .override(
-                                                      font: GoogleFonts.inter(
-                                                        fontWeight:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .labelMedium
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .labelMedium
-                                                                .fontStyle,
-                                                      ),
-                                                      letterSpacing: 0.0,
-                                                      fontWeight:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .labelMedium
-                                                              .fontWeight,
-                                                      fontStyle:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .labelMedium
-                                                              .fontStyle,
-                                                    ),
+                                                    .fontWeight,
+                                                fontStyle:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .labelMedium
+                                                    .fontStyle,
+                                              ),
+                                              letterSpacing: 0.0,
+                                              fontWeight:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .labelMedium
+                                                  .fontWeight,
+                                              fontStyle:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .labelMedium
+                                                  .fontStyle,
+                                            ),
                                             hintText: 'Enter your Task name',
                                             hintStyle:
-                                                FlutterFlowTheme.of(context)
+                                            FlutterFlowTheme.of(context)
+                                                .labelMedium
+                                                .override(
+                                              font: GoogleFonts.inter(
+                                                fontWeight:
+                                                FlutterFlowTheme.of(
+                                                    context)
                                                     .labelMedium
-                                                    .override(
-                                                      font: GoogleFonts.inter(
-                                                        fontWeight:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .labelMedium
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .labelMedium
-                                                                .fontStyle,
-                                                      ),
-                                                      letterSpacing: 0.0,
-                                                      fontWeight:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .labelMedium
-                                                              .fontWeight,
-                                                      fontStyle:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .labelMedium
-                                                              .fontStyle,
-                                                    ),
+                                                    .fontWeight,
+                                                fontStyle:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .labelMedium
+                                                    .fontStyle,
+                                              ),
+                                              letterSpacing: 0.0,
+                                              fontWeight:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .labelMedium
+                                                  .fontWeight,
+                                              fontStyle:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .labelMedium
+                                                  .fontStyle,
+                                            ),
                                             enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                 color: Color(0x00000000),
                                                 width: 1.0,
                                               ),
                                               borderRadius:
-                                                  BorderRadius.circular(14.0),
+                                              BorderRadius.circular(14.0),
                                             ),
                                             focusedBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
@@ -504,62 +545,62 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                                 width: 1.0,
                                               ),
                                               borderRadius:
-                                                  BorderRadius.circular(14.0),
+                                              BorderRadius.circular(14.0),
                                             ),
                                             errorBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                 color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .error,
+                                                FlutterFlowTheme.of(context)
+                                                    .error,
                                                 width: 1.0,
                                               ),
                                               borderRadius:
-                                                  BorderRadius.circular(14.0),
+                                              BorderRadius.circular(14.0),
                                             ),
                                             focusedErrorBorder:
-                                                OutlineInputBorder(
+                                            OutlineInputBorder(
                                               borderSide: BorderSide(
                                                 color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .error,
+                                                FlutterFlowTheme.of(context)
+                                                    .error,
                                                 width: 1.0,
                                               ),
                                               borderRadius:
-                                                  BorderRadius.circular(14.0),
+                                              BorderRadius.circular(14.0),
                                             ),
                                             filled: true,
                                             fillColor:
-                                                FlutterFlowTheme.of(context)
-                                                    .primaryBackground,
+                                            FlutterFlowTheme.of(context)
+                                                .primaryBackground,
                                           ),
                                           style: FlutterFlowTheme.of(context)
                                               .bodyMedium
                                               .override(
-                                                font: GoogleFonts.inter(
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
-                                                letterSpacing: 0.0,
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
+                                            font: GoogleFonts.inter(
+                                              fontWeight:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .bodyMedium
+                                                  .fontWeight,
+                                              fontStyle:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .bodyMedium
+                                                  .fontStyle,
+                                            ),
+                                            letterSpacing: 0.0,
+                                            fontWeight:
+                                            FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontWeight,
+                                            fontStyle:
+                                            FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontStyle,
+                                          ),
                                           cursorColor:
-                                              FlutterFlowTheme.of(context)
-                                                  .primaryText,
+                                          FlutterFlowTheme.of(context)
+                                              .primaryText,
                                           validator: _model
                                               .taskNameTextControllerValidator
                                               .asValidator(context),
@@ -575,7 +616,7 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                       ),
                       Padding(
                         padding:
-                            EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 15.0),
+                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 15.0),
                         child: Material(
                           color: Colors.transparent,
                           elevation: 2.0,
@@ -606,20 +647,20 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                         style: FlutterFlowTheme.of(context)
                                             .bodyMedium
                                             .override(
-                                              font: GoogleFonts.inter(
-                                                fontWeight: FontWeight.w600,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                              letterSpacing: 0.0,
-                                              fontWeight: FontWeight.w600,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
-                                            ),
+                                          font: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w600,
+                                            fontStyle:
+                                            FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontStyle,
+                                          ),
+                                          letterSpacing: 0.0,
+                                          fontWeight: FontWeight.w600,
+                                          fontStyle:
+                                          FlutterFlowTheme.of(context)
+                                              .bodyMedium
+                                              .fontStyle,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -629,82 +670,82 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                           0.0, 0.0, 5.0, 0.0),
                                       child: Container(
                                         width:
-                                            MediaQuery.sizeOf(context).width *
-                                                1.0,
+                                        MediaQuery.sizeOf(context).width *
+                                            1.0,
                                         child: TextFormField(
                                           controller:
-                                              _model.descriptionTextController,
+                                          _model.descriptionTextController,
                                           focusNode:
-                                              _model.descriptionFocusNode,
+                                          _model.descriptionFocusNode,
                                           autofocus: false,
                                           obscureText: false,
                                           decoration: InputDecoration(
                                             isDense: true,
                                             labelStyle:
-                                                FlutterFlowTheme.of(context)
+                                            FlutterFlowTheme.of(context)
+                                                .labelMedium
+                                                .override(
+                                              font: GoogleFonts.inter(
+                                                fontWeight:
+                                                FlutterFlowTheme.of(
+                                                    context)
                                                     .labelMedium
-                                                    .override(
-                                                      font: GoogleFonts.inter(
-                                                        fontWeight:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .labelMedium
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .labelMedium
-                                                                .fontStyle,
-                                                      ),
-                                                      letterSpacing: 0.0,
-                                                      fontWeight:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .labelMedium
-                                                              .fontWeight,
-                                                      fontStyle:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .labelMedium
-                                                              .fontStyle,
-                                                    ),
+                                                    .fontWeight,
+                                                fontStyle:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .labelMedium
+                                                    .fontStyle,
+                                              ),
+                                              letterSpacing: 0.0,
+                                              fontWeight:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .labelMedium
+                                                  .fontWeight,
+                                              fontStyle:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .labelMedium
+                                                  .fontStyle,
+                                            ),
                                             hintText:
-                                                'Enter your task description',
+                                            'Enter your task description',
                                             hintStyle:
-                                                FlutterFlowTheme.of(context)
+                                            FlutterFlowTheme.of(context)
+                                                .labelMedium
+                                                .override(
+                                              font: GoogleFonts.inter(
+                                                fontWeight:
+                                                FlutterFlowTheme.of(
+                                                    context)
                                                     .labelMedium
-                                                    .override(
-                                                      font: GoogleFonts.inter(
-                                                        fontWeight:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .labelMedium
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .labelMedium
-                                                                .fontStyle,
-                                                      ),
-                                                      letterSpacing: 0.0,
-                                                      fontWeight:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .labelMedium
-                                                              .fontWeight,
-                                                      fontStyle:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .labelMedium
-                                                              .fontStyle,
-                                                    ),
+                                                    .fontWeight,
+                                                fontStyle:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .labelMedium
+                                                    .fontStyle,
+                                              ),
+                                              letterSpacing: 0.0,
+                                              fontWeight:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .labelMedium
+                                                  .fontWeight,
+                                              fontStyle:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .labelMedium
+                                                  .fontStyle,
+                                            ),
                                             enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                 color: Color(0x00000000),
                                                 width: 1.0,
                                               ),
                                               borderRadius:
-                                                  BorderRadius.circular(14.0),
+                                              BorderRadius.circular(14.0),
                                             ),
                                             focusedBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
@@ -712,63 +753,63 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                                 width: 1.0,
                                               ),
                                               borderRadius:
-                                                  BorderRadius.circular(14.0),
+                                              BorderRadius.circular(14.0),
                                             ),
                                             errorBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                 color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .error,
+                                                FlutterFlowTheme.of(context)
+                                                    .error,
                                                 width: 1.0,
                                               ),
                                               borderRadius:
-                                                  BorderRadius.circular(14.0),
+                                              BorderRadius.circular(14.0),
                                             ),
                                             focusedErrorBorder:
-                                                OutlineInputBorder(
+                                            OutlineInputBorder(
                                               borderSide: BorderSide(
                                                 color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .error,
+                                                FlutterFlowTheme.of(context)
+                                                    .error,
                                                 width: 1.0,
                                               ),
                                               borderRadius:
-                                                  BorderRadius.circular(14.0),
+                                              BorderRadius.circular(14.0),
                                             ),
                                             filled: true,
                                             fillColor:
-                                                FlutterFlowTheme.of(context)
-                                                    .primaryBackground,
+                                            FlutterFlowTheme.of(context)
+                                                .primaryBackground,
                                           ),
                                           style: FlutterFlowTheme.of(context)
                                               .bodyMedium
                                               .override(
-                                                font: GoogleFonts.inter(
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
-                                                letterSpacing: 0.0,
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
+                                            font: GoogleFonts.inter(
+                                              fontWeight:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .bodyMedium
+                                                  .fontWeight,
+                                              fontStyle:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .bodyMedium
+                                                  .fontStyle,
+                                            ),
+                                            letterSpacing: 0.0,
+                                            fontWeight:
+                                            FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontWeight,
+                                            fontStyle:
+                                            FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontStyle,
+                                          ),
                                           maxLines: 12,
                                           cursorColor:
-                                              FlutterFlowTheme.of(context)
-                                                  .primaryText,
+                                          FlutterFlowTheme.of(context)
+                                              .primaryText,
                                           validator: _model
                                               .descriptionTextControllerValidator
                                               .asValidator(context),
@@ -798,36 +839,36 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                 context,
                                 child!,
                                 headerBackgroundColor:
-                                    FlutterFlowTheme.of(context).primary,
+                                FlutterFlowTheme.of(context).primary,
                                 headerForegroundColor:
-                                    FlutterFlowTheme.of(context).info,
+                                FlutterFlowTheme.of(context).info,
                                 headerTextStyle: FlutterFlowTheme.of(context)
                                     .headlineLarge
                                     .override(
-                                      font: GoogleFonts.interTight(
-                                        fontWeight: FontWeight.w600,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .headlineLarge
-                                            .fontStyle,
-                                      ),
-                                      fontSize: 32.0,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.w600,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .headlineLarge
-                                          .fontStyle,
-                                    ),
+                                  font: GoogleFonts.interTight(
+                                    fontWeight: FontWeight.w600,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .headlineLarge
+                                        .fontStyle,
+                                  ),
+                                  fontSize: 32.0,
+                                  letterSpacing: 0.0,
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .headlineLarge
+                                      .fontStyle,
+                                ),
                                 pickerBackgroundColor:
-                                    FlutterFlowTheme.of(context)
-                                        .secondaryBackground,
+                                FlutterFlowTheme.of(context)
+                                    .secondaryBackground,
                                 pickerForegroundColor:
-                                    FlutterFlowTheme.of(context).primaryText,
+                                FlutterFlowTheme.of(context).primaryText,
                                 selectedDateTimeBackgroundColor:
-                                    Color(0xFF5F33E1),
+                                Color(0xFF5F33E1),
                                 selectedDateTimeForegroundColor:
-                                    FlutterFlowTheme.of(context).info,
+                                FlutterFlowTheme.of(context).info,
                                 actionButtonForegroundColor:
-                                    FlutterFlowTheme.of(context).primaryText,
+                                FlutterFlowTheme.of(context).primaryText,
                                 iconSize: 24.0,
                               );
                             },
@@ -838,43 +879,43 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                             _datePickedTime = await showTimePicker(
                               context: context,
                               initialTime:
-                                  TimeOfDay.fromDateTime(getCurrentTimestamp),
+                              TimeOfDay.fromDateTime(getCurrentTimestamp),
                               builder: (context, child) {
                                 return wrapInMaterialTimePickerTheme(
                                   context,
                                   child!,
                                   headerBackgroundColor:
-                                      FlutterFlowTheme.of(context).primary,
+                                  FlutterFlowTheme.of(context).primary,
                                   headerForegroundColor:
-                                      FlutterFlowTheme.of(context).info,
+                                  FlutterFlowTheme.of(context).info,
                                   headerTextStyle: FlutterFlowTheme.of(context)
                                       .headlineLarge
                                       .override(
-                                        font: GoogleFonts.interTight(
-                                          fontWeight: FontWeight.w600,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .headlineLarge
-                                                  .fontStyle,
-                                        ),
-                                        fontSize: 32.0,
-                                        letterSpacing: 0.0,
-                                        fontWeight: FontWeight.w600,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .headlineLarge
-                                            .fontStyle,
-                                      ),
-                                  pickerBackgroundColor:
+                                    font: GoogleFonts.interTight(
+                                      fontWeight: FontWeight.w600,
+                                      fontStyle:
                                       FlutterFlowTheme.of(context)
-                                          .secondaryBackground,
+                                          .headlineLarge
+                                          .fontStyle,
+                                    ),
+                                    fontSize: 32.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FontWeight.w600,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .headlineLarge
+                                        .fontStyle,
+                                  ),
+                                  pickerBackgroundColor:
+                                  FlutterFlowTheme.of(context)
+                                      .secondaryBackground,
                                   pickerForegroundColor:
-                                      FlutterFlowTheme.of(context).primaryText,
+                                  FlutterFlowTheme.of(context).primaryText,
                                   selectedDateTimeBackgroundColor:
-                                      Color(0xFF5F33E1),
+                                  Color(0xFF5F33E1),
                                   selectedDateTimeForegroundColor:
-                                      FlutterFlowTheme.of(context).info,
+                                  FlutterFlowTheme.of(context).info,
                                   actionButtonForegroundColor:
-                                      FlutterFlowTheme.of(context).primaryText,
+                                  FlutterFlowTheme.of(context).primaryText,
                                   iconSize: 24.0,
                                 );
                               },
@@ -929,7 +970,7 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                     children: [
                                       ClipRRect(
                                         borderRadius:
-                                            BorderRadius.circular(0.0),
+                                        BorderRadius.circular(0.0),
                                         child: Image.asset(
                                           'assets/images/calendar.png',
                                           width: 24.0,
@@ -943,32 +984,32 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                         child: Column(
                                           mainAxisSize: MainAxisSize.max,
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               'End Date',
                                               style:
-                                                  FlutterFlowTheme.of(context)
+                                              FlutterFlowTheme.of(context)
+                                                  .bodyMedium
+                                                  .override(
+                                                font: GoogleFonts.inter(
+                                                  fontWeight:
+                                                  FontWeight.w600,
+                                                  fontStyle:
+                                                  FlutterFlowTheme.of(
+                                                      context)
                                                       .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                      ),
+                                                      .fontStyle,
+                                                ),
+                                                letterSpacing: 0.0,
+                                                fontWeight:
+                                                FontWeight.w600,
+                                                fontStyle:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .bodyMedium
+                                                    .fontStyle,
+                                              ),
                                             ),
                                             Text(
                                               valueOrDefault<String>(
@@ -977,33 +1018,33 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                                 'Month Day, Year',
                                               ),
                                               style:
-                                                  FlutterFlowTheme.of(context)
+                                              FlutterFlowTheme.of(context)
+                                                  .bodyMedium
+                                                  .override(
+                                                font: GoogleFonts.inter(
+                                                  fontWeight:
+                                                  FlutterFlowTheme.of(
+                                                      context)
                                                       .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontWeight,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                      ),
+                                                      .fontWeight,
+                                                  fontStyle:
+                                                  FlutterFlowTheme.of(
+                                                      context)
+                                                      .bodyMedium
+                                                      .fontStyle,
+                                                ),
+                                                letterSpacing: 0.0,
+                                                fontWeight:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .bodyMedium
+                                                    .fontWeight,
+                                                fontStyle:
+                                                FlutterFlowTheme.of(
+                                                    context)
+                                                    .bodyMedium
+                                                    .fontStyle,
+                                              ),
                                             ),
                                           ].divide(SizedBox(height: 5.0)),
                                         ),
@@ -1036,7 +1077,7 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                 (widget!.taskRefOnStatus != null) ||
                                 (widget!.taskRefOnSinglrGroupTask != null)) {
                               await actions.delAlarm(
-                                () {
+                                    () {
                                   if (widget!.taskRef != null) {
                                     return widget!.taskRef!.taskID;
                                   } else if (widget!.taskRefOnGroup != null) {
@@ -1051,7 +1092,7 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                               );
                               await actions.addAlarm(
                                 _model.endDate!,
-                                () {
+                                    () {
                                   if (widget!.taskRef != null) {
                                     return widget!.taskRef!.taskID;
                                   } else if (widget!.taskRefOnGroup != null) {
@@ -1070,7 +1111,7 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                 taskGroup: _model.textOutPut!,
                                 taskName: _model.taskNameTextController.text,
                                 description:
-                                    _model.descriptionTextController.text,
+                                _model.descriptionTextController.text,
                                 endDate: _model.endDate!.toString(),
                                 taskID: () {
                                   if (widget!.taskRef != null) {
@@ -1124,6 +1165,13 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                   !_model.formKey.currentState!.validate()) {
                                 return;
                               }
+                              // Validate task group selection.
+                              safeSetState(() =>
+                              _model.taskGroupSubmitAttempted = true);
+                              if (_model.textOutPut == null ||
+                                  _model.textOutPut!.isEmpty) {
+                                return;
+                              }
                               if (_model.datePicked == null) {
                                 ScaffoldMessenger.of(context).clearSnackBars();
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -1152,7 +1200,7 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                   taskGroup: _model.textOutPut!,
                                   taskName: _model.taskNameTextController.text,
                                   description:
-                                      _model.descriptionTextController.text,
+                                  _model.descriptionTextController.text,
                                   endDate: _model.endDate!.toString(),
                                   taskStatus: 'not done',
                                   taskID: _model.taskId!,
@@ -1189,7 +1237,7 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                     ),
                                     duration: Duration(milliseconds: 4000),
                                     backgroundColor:
-                                        FlutterFlowTheme.of(context).error,
+                                    FlutterFlowTheme.of(context).error,
                                   ),
                                 );
                               }
@@ -1209,24 +1257,24 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                             textStyle: FlutterFlowTheme.of(context)
                                 .titleSmall
                                 .override(
-                                  font: GoogleFonts.interTight(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .titleSmall
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleSmall
-                                        .fontStyle,
-                                  ),
-                                  color: Colors.white,
-                                  fontSize: 18.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
+                              font: GoogleFonts.interTight(
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .titleSmall
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .titleSmall
+                                    .fontStyle,
+                              ),
+                              color: Colors.white,
+                              fontSize: 18.0,
+                              letterSpacing: 0.0,
+                              fontWeight: FlutterFlowTheme.of(context)
+                                  .titleSmall
+                                  .fontWeight,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .titleSmall
+                                  .fontStyle,
+                            ),
                             elevation: 4.0,
                             borderRadius: BorderRadius.circular(14.0),
                           ),

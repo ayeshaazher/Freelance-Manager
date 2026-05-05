@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
+import '../../settings/settings_widget.dart';
 import '/backend/backend.dart';
 
 import '/backend/sqlite/sqlite_manager.dart';
@@ -215,7 +216,12 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: GeminiAIWidget.routeName,
           path: GeminiAIWidget.routePath,
           builder: (context, params) => GeminiAIWidget(),
-        )
+        ),
+        FFRoute(
+          name: SettingsWidget.routeName,
+          path: SettingsWidget.routePath,
+          builder: (context, state) => const SettingsWidget(),
+        ),
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
       observers: [routeObserver],
     );

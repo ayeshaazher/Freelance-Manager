@@ -1,18 +1,21 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../firebase_options.dart';
+
 Future initFirebase() async {
   if (kIsWeb) {
     await Firebase.initializeApp(
         options: FirebaseOptions(
-            apiKey: "AIzaSyCK3M-WOq-OZlPQGsYKn-ExhVwDEQ5-JbI",
-            authDomain: "task-manager-c429f.firebaseapp.com",
-            projectId: "task-manager-c429f",
-            storageBucket: "task-manager-c429f.firebasestorage.app",
-            messagingSenderId: "796788876351",
-            appId: "1:796788876351:web:da5cbc7370b0b40a42048a",
-            measurementId: "G-B806PVNB8B"));
+            apiKey: "AIzaSyDxgJcmhd3nD_so5A7fyBVWMDxe-DMYhyM",
+            authDomain: "ayeshwebsite-f0494.firebaseapp.com",
+            projectId: "ayeshwebsite-f0494",
+            storageBucket: "ayeshwebsite-f0494.firebasestorage.app",
+            messagingSenderId: "882112364789",
+            appId: "1:882112364789:web:9ea97dd0e45eb38926c5bc"));
   } else {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   }
 }

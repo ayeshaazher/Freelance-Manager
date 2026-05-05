@@ -65,15 +65,20 @@ class _GeminiAIWidgetState extends State<GeminiAIWidget> {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Align(
-                      alignment: AlignmentDirectional(-1.0, -1.0),
-                      child: Padding(
-                        padding:
-                            EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-                        child: Icon(
-                          FFIcons.karrowLeft,
-                          color: FlutterFlowTheme.of(context).primaryText,
-                          size: 30.0,
+                    InkWell(
+                      onTap: () async {
+                        context.safePop();
+                      },
+                      child: Align(
+                        alignment: AlignmentDirectional(-1.0, -1.0),
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                              12.0, 0.0, 0.0, 0.0),
+                          child: Icon(
+                            FFIcons.karrowLeft,
+                            color: FlutterFlowTheme.of(context).primaryText,
+                            size: 30.0,
+                          ),
                         ),
                       ),
                     ),

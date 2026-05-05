@@ -433,7 +433,7 @@ void showSnackbar(
   ScaffoldMessenger.of(context).hideCurrentSnackBar();
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Row(
+      content: Wrap(
         children: [
           if (loading)
             Padding(

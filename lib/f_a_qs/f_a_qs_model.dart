@@ -17,6 +17,9 @@ class FAQsModel extends FlutterFlowModel<FAQsWidget> {
   // Model for colorContainer component.
   late ColorContainerModel colorContainerModel;
 
+  // Tracks which FAQ item is currently expanded (-1 means none).
+  int expandedIndex = -1;
+
   @override
   void initState(BuildContext context) {
     colorContainerModel = createModel(context, () => ColorContainerModel());
