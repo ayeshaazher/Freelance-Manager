@@ -1,6 +1,7 @@
+import 'dart:io';
+
 import 'package:alarm/alarm.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -17,22 +18,46 @@ import 'flutter_flow/flutter_flow_util.dart';
 import 'flutter_flow/nav/nav.dart';
 import 'index.dart';
 
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
+
+// Global navigator key — MUST also be passed to GoRouter in nav.dart
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+Future<void> requestIOSPermission() async {
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+      IOSFlutterLocalNotificationsPlugin>()
+      ?.requestPermissions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   GoRouter.optionURLReflectsImperativeAPIs = true;
   usePathUrlStrategy();
 
   await initFirebase();
-
   await SQLiteManager.initialize();
   await FlutterFlowTheme.initialize();
+
+  if (Platform.isIOS) {
+    await requestIOSPermission();
+  }
+
   await Alarm.init();
 
-  final appState = FFAppState(); // Initialize FFAppState
+  final appState = FFAppState();
   await appState.initializePersistedState();
-  // Start final custom actions code
   await actions.requestNotificationPermissions();
-  // End final custom actions code
+
+  // ⚠️ Do NOT listen to Alarm.ringing here — navigator is not ready yet.
+  // The listener lives in HomeWidget.initState() instead.
 
   runApp(ChangeNotifierProvider(
     create: (context) => appState,
@@ -41,7 +66,6 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-  // This widget is the root of your application.
   @override
   State<MyApp> createState() => _MyAppState();
 
@@ -54,6 +78,7 @@ class _MyAppState extends State<MyApp> {
 
   late AppStateNotifier _appStateNotifier;
   late GoRouter _router;
+
   String getRoute([RouteMatch? routeMatch]) {
     final RouteMatch lastMatch =
         routeMatch ?? _router.routerDelegate.currentConfiguration.last;
@@ -67,14 +92,13 @@ class _MyAppState extends State<MyApp> {
       _router.routerDelegate.currentConfiguration.matches
           .map((e) => getRoute(e))
           .toList();
-  late Stream<BaseAuthUser> userStream;
 
+  late Stream<BaseAuthUser> userStream;
   final authUserSub = authenticatedUserStream.listen((_) {});
 
   @override
   void initState() {
     super.initState();
-
     _appStateNotifier = AppStateNotifier.instance;
     _router = createRouter(_appStateNotifier);
     userStream = taskManagerFirebaseUserStream()
@@ -84,28 +108,27 @@ class _MyAppState extends State<MyApp> {
     jwtTokenStream.listen((_) {});
     Future.delayed(
       Duration(milliseconds: 2000),
-      () => _appStateNotifier.stopShowingSplashImage(),
+          () => _appStateNotifier.stopShowingSplashImage(),
     );
   }
 
   @override
   void dispose() {
     authUserSub.cancel();
-
     super.dispose();
   }
 
   void setThemeMode(ThemeMode mode) => safeSetState(() {
-        _themeMode = mode;
-        FlutterFlowTheme.saveThemeMode(mode);
-      });
+    _themeMode = mode;
+    FlutterFlowTheme.saveThemeMode(mode);
+  });
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'taskManager',
-      localizationsDelegates: [
+      localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

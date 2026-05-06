@@ -1,3 +1,5 @@
+import 'package:alarm/alarm.dart';
+
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/sqlite/sqlite_manager.dart';
 import '/components/color_container_widget.dart';
@@ -393,6 +395,9 @@ class _ToDoTaskWidgetState extends State<ToDoTaskWidget> {
                                             ) ??
                                             false;
                                     if (confirmDialogResponse) {
+                                      await Alarm.stop(
+                                          listViewGetAllTasksbasedOnGroupRow
+                                              .taskID);
                                       await SQLiteManager.instance.deleteTasks(
                                         taskID:
                                             listViewGetAllTasksbasedOnGroupRow
@@ -639,6 +644,9 @@ class _ToDoTaskWidgetState extends State<ToDoTaskWidget> {
                                             ) ??
                                             false;
                                     if (confirmDialogResponse) {
+                                      await Alarm.stop(
+                                          listViewGetAllTasksbasedOnStatusRow
+                                              .taskID);
                                       await SQLiteManager.instance.deleteTasks(
                                         taskID:
                                             listViewGetAllTasksbasedOnStatusRow

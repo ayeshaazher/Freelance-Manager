@@ -20,8 +20,8 @@
         android:label="Freelance Manager"
         tools:replace="android:label"
         android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true"
         android:requestLegacyExternalStorage="true">
-
         <activity
             android:name=".MainActivity"
             android:exported="true"

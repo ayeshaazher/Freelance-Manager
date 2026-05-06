@@ -1,3 +1,5 @@
+import 'package:alarm/alarm.dart';
+
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/sqlite/sqlite_manager.dart';
 import '/chat_groupwbubbles/empty_state_simple/empty_state_simple_widget.dart';
@@ -193,6 +195,9 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                                           'done',
                                   taskStatus: 'Done',
                                   actionDell: () async {
+                                    await Alarm.stop(
+                                        listViewGetAllTasksbasedOnStatusRow
+                                            .taskID);
                                     var confirmDialogResponse =
                                         await showDialog<bool>(
                                               context: context,

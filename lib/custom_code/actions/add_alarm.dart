@@ -17,22 +17,31 @@ Future addAlarm(
   String title,
   String description,
 ) async {
+  // Encode task info into payload
+  final payload = jsonEncode({
+    'taskId': id,
+    'taskName': description,
+    'taskGroup': title,
+  });
   // Add your function code here!
   final alarmSettings = AlarmSettings(
     id: id,
     dateTime: dateTime,
-    assetAudioPath: 'assets/audios/alarm.mp3',
+    assetAudioPath: 'assets/audios/alarm.wav',
     loopAudio: true,
     vibrate: true,
-    volume: 1,
-    fadeDuration: 3.0,
     androidFullScreenIntent: true,
+    volumeSettings: VolumeSettings.fade(   // ✅ new API
+      volume: 1.0,
+      fadeDuration: Duration(seconds: 3),
+    ),
     notificationSettings: NotificationSettings(
       title: title,
       body: description,
-      stopButton: "Stop",
+      //stopButton: 'Stop',   // ✅ must be non-null to show the button
       icon: 'notification_icon',
     ),
+    payload: payload, // ← store it here
   );
   return await Alarm.set(alarmSettings: alarmSettings);
 }

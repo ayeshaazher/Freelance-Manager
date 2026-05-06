@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.gdelataillade.fetch</string>
+	</array>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -50,9 +56,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-    <string>This app uses the camera to let you capture photos or videos for tasks and updates.</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>This app uses the microphone to record audio in videos or task-related content.</string>
+	<string>This app uses the camera to let you capture photos or videos for tasks and updates.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app uses the microphone to record audio in videos or task-related content.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app allows you to upload photos from your library to attach to profile</string>
 	<key>UIApplicationSceneManifest</key>
@@ -78,6 +84,11 @@
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+		<string>fetch</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -97,5 +108,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSUserNotificationUsageDescription</key>
+    <string>This app needs notification permission to set alarms</string>
 </dict>
 </plist>

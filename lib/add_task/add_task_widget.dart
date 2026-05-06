@@ -51,52 +51,52 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      if ((widget!.taskRef != null) ||
-          (widget!.taskRefOnGroup != null) ||
-          (widget!.taskRefOnStatus != null) ||
-          (widget!.taskRefOnSinglrGroupTask != null)) {
+      if ((widget.taskRef != null) ||
+          (widget.taskRefOnGroup != null) ||
+          (widget.taskRefOnStatus != null) ||
+          (widget.taskRefOnSinglrGroupTask != null)) {
         _model.endDate = functions.parseDateTime(() {
-          if (widget!.taskRef != null) {
-            return widget!.taskRef!.endDate;
-          } else if (widget!.taskRefOnGroup != null) {
-            return widget!.taskRefOnGroup!.endDate;
-          } else if (widget!.taskRefOnStatus != null) {
-            return widget!.taskRefOnStatus!.endDate;
+          if (widget.taskRef != null) {
+            return widget.taskRef!.endDate;
+          } else if (widget.taskRefOnGroup != null) {
+            return widget.taskRefOnGroup!.endDate;
+          } else if (widget.taskRefOnStatus != null) {
+            return widget.taskRefOnStatus!.endDate;
           } else {
-            return widget!.taskRefOnSinglrGroupTask!.endDate;
+            return widget.taskRefOnSinglrGroupTask!.endDate;
           }
         }(), 'yyyy-MM-dd HH:mm:ss');
         _model.textOutPut = () {
-          if (widget!.taskRef != null) {
-            return widget!.taskRef?.taskGroup;
-          } else if (widget!.taskRefOnGroup != null) {
-            return widget!.taskRefOnGroup?.taskGroup;
-          } else if (widget!.taskRefOnStatus != null) {
-            return widget!.taskRefOnStatus?.taskGroup;
+          if (widget.taskRef != null) {
+            return widget.taskRef?.taskGroup;
+          } else if (widget.taskRefOnGroup != null) {
+            return widget.taskRefOnGroup?.taskGroup;
+          } else if (widget.taskRefOnStatus != null) {
+            return widget.taskRefOnStatus?.taskGroup;
           } else {
-            return widget!.taskRefOnSinglrGroupTask?.taskGroup;
+            return widget.taskRefOnSinglrGroupTask?.taskGroup;
           }
         }();
         _model.taskName = () {
-          if (widget!.taskRef != null) {
-            return widget!.taskRef?.taskName;
-          } else if (widget!.taskRefOnGroup != null) {
-            return widget!.taskRefOnGroup?.taskName;
-          } else if (widget!.taskRefOnStatus != null) {
-            return widget!.taskRefOnStatus?.taskName;
+          if (widget.taskRef != null) {
+            return widget.taskRef?.taskName;
+          } else if (widget.taskRefOnGroup != null) {
+            return widget.taskRefOnGroup?.taskName;
+          } else if (widget.taskRefOnStatus != null) {
+            return widget.taskRefOnStatus?.taskName;
           } else {
-            return widget!.taskRefOnSinglrGroupTask?.taskName;
+            return widget.taskRefOnSinglrGroupTask?.taskName;
           }
         }();
         _model.description = () {
-          if (widget!.taskRef != null) {
-            return widget!.taskRef?.description;
-          } else if (widget!.taskRefOnGroup != null) {
-            return widget!.taskRefOnGroup?.description;
-          } else if (widget!.taskRefOnStatus != null) {
-            return widget!.taskRefOnStatus?.description;
+          if (widget.taskRef != null) {
+            return widget.taskRef?.description;
+          } else if (widget.taskRefOnGroup != null) {
+            return widget.taskRefOnGroup?.description;
+          } else if (widget.taskRefOnStatus != null) {
+            return widget.taskRefOnStatus?.description;
           } else {
-            return widget!.taskRefOnSinglrGroupTask?.description;
+            return widget.taskRefOnSinglrGroupTask?.description;
           }
         }();
         safeSetState(() {});
@@ -106,23 +106,55 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
     });
 
     _model.taskNameTextController ??=
-        TextEditingController(text: widget!.taskRef?.taskName);
+        TextEditingController(text: widget.taskRef?.taskName);
     _model.taskNameFocusNode ??= FocusNode();
 
     _model.descriptionTextController ??=
-        TextEditingController(text: widget!.taskRef?.description);
+        TextEditingController(text: widget.taskRef?.description);
     _model.descriptionFocusNode ??= FocusNode();
   }
 
   @override
   void dispose() {
     _model.dispose();
-
     super.dispose();
+  }
+
+  /// Helper to get the active task ID across all ref types.
+  int _getTaskID() {
+    if (widget.taskRef != null) return widget.taskRef!.taskID;
+    if (widget.taskRefOnGroup != null) return widget.taskRefOnGroup!.taskID;
+    if (widget.taskRefOnStatus != null) return widget.taskRefOnStatus!.taskID;
+    return widget.taskRefOnSinglrGroupTask!.taskID;
+  }
+
+  /// Helper to get the active task status across all ref types.
+  String _getTaskStatus() {
+    if (widget.taskRef != null) return widget.taskRef!.taskStatus;
+    if (widget.taskRefOnGroup != null) return widget.taskRefOnGroup!.taskStatus;
+    if (widget.taskRefOnStatus != null) return widget.taskRefOnStatus!.taskStatus;
+    return widget.taskRefOnSinglrGroupTask!.taskStatus;
+  }
+
+  /// Resets all form state after a successful add or update.
+  void _resetForm() {
+    safeSetState(() {
+      _model.taskNameTextController?.clear();
+      _model.descriptionTextController?.clear();
+      _model.endDate = null;
+      _model.textOutPut = null;
+      _model.datePicked = null;
+      _model.taskGroupSubmitAttempted = false; // ← clears the red border/error
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final bool isEditing = (widget.taskRef != null) ||
+        (widget.taskRefOnGroup != null) ||
+        (widget.taskRefOnStatus != null) ||
+        (widget.taskRefOnSinglrGroupTask != null);
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -147,9 +179,10 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
+                      // ── Header ──────────────────────────────────────────
                       Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            12.0, 0.0, 12.0, 0.0),
+                        padding:
+                        EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -159,9 +192,7 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                               focusColor: Colors.transparent,
                               hoverColor: Colors.transparent,
                               highlightColor: Colors.transparent,
-                              onTap: () async {
-                                context.safePop();
-                              },
+                              onTap: () async => context.safePop(),
                               child: Icon(
                                 FFIcons.karrowLeft,
                                 color: FlutterFlowTheme.of(context).primaryText,
@@ -169,7 +200,7 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                               ),
                             ),
                             Text(
-                              'Add Tasks',
+                              isEditing ? 'Edit Task' : 'Add Tasks',
                               style: FlutterFlowTheme.of(context)
                                   .bodyMedium
                                   .override(
@@ -192,9 +223,8 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                               focusColor: Colors.transparent,
                               hoverColor: Colors.transparent,
                               highlightColor: Colors.transparent,
-                              onTap: () async {
-                                context.pushNamed(GeminiAIWidget.routeName);
-                              },
+                              onTap: () async =>
+                                  context.pushNamed(GeminiAIWidget.routeName),
                               child: FaIcon(
                                 FontAwesomeIcons.robot,
                                 color: FlutterFlowTheme.of(context).primaryText,
@@ -204,6 +234,8 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                           ],
                         ),
                       ),
+
+                      // ── Task Group picker ────────────────────────────────
                       Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(
                             0.0, 20.0, 0.0, 15.0),
@@ -239,8 +271,6 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                 _model.textOutPut!.isNotEmpty) {
                               _model.taskGroupSubmitAttempted = false;
                             }
-                            safeSetState(() {});
-
                             safeSetState(() {});
                           },
                           child: Material(
@@ -381,7 +411,8 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                           ),
                         ),
                       ),
-                      // Task group validation error
+
+                      // ── Task group validation error ───────────────────────
                       if (_model.taskGroupSubmitAttempted &&
                           (_model.textOutPut == null ||
                               _model.textOutPut!.isEmpty))
@@ -408,9 +439,11 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                             ),
                           ),
                         ),
+
+                      // ── Task Name ────────────────────────────────────────
                       Padding(
-                        padding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 15.0),
+                        padding: EdgeInsetsDirectional.fromSTEB(
+                            0.0, 0.0, 0.0, 15.0),
                         child: Material(
                           color: Colors.transparent,
                           elevation: 2.0,
@@ -432,7 +465,8 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Align(
-                                    alignment: AlignmentDirectional(-1.0, -1.0),
+                                    alignment:
+                                    AlignmentDirectional(-1.0, -1.0),
                                     child: Padding(
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           10.0, 0.0, 0.0, 0.0),
@@ -462,7 +496,7 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                     child: Padding(
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           0.0, 0.0, 5.0, 0.0),
-                                      child: Container(
+                                      child: SizedBox(
                                         width:
                                         MediaQuery.sizeOf(context).width *
                                             1.0,
@@ -491,16 +525,6 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                                     .fontStyle,
                                               ),
                                               letterSpacing: 0.0,
-                                              fontWeight:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .labelMedium
-                                                  .fontWeight,
-                                              fontStyle:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .labelMedium
-                                                  .fontStyle,
                                             ),
                                             hintText: 'Enter your Task name',
                                             hintStyle:
@@ -520,16 +544,6 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                                     .fontStyle,
                                               ),
                                               letterSpacing: 0.0,
-                                              fontWeight:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .labelMedium
-                                                  .fontWeight,
-                                              fontStyle:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .labelMedium
-                                                  .fontStyle,
                                             ),
                                             enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
@@ -589,14 +603,6 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                                   .fontStyle,
                                             ),
                                             letterSpacing: 0.0,
-                                            fontWeight:
-                                            FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .fontWeight,
-                                            fontStyle:
-                                            FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .fontStyle,
                                           ),
                                           cursorColor:
                                           FlutterFlowTheme.of(context)
@@ -614,9 +620,11 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                           ),
                         ),
                       ),
+
+                      // ── Description ──────────────────────────────────────
                       Padding(
-                        padding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 15.0),
+                        padding: EdgeInsetsDirectional.fromSTEB(
+                            0.0, 0.0, 0.0, 15.0),
                         child: Material(
                           color: Colors.transparent,
                           elevation: 2.0,
@@ -638,7 +646,8 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Align(
-                                    alignment: AlignmentDirectional(-1.0, -1.0),
+                                    alignment:
+                                    AlignmentDirectional(-1.0, -1.0),
                                     child: Padding(
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           10.0, 0.0, 0.0, 0.0),
@@ -668,7 +677,7 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                     child: Padding(
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           0.0, 0.0, 5.0, 0.0),
-                                      child: Container(
+                                      child: SizedBox(
                                         width:
                                         MediaQuery.sizeOf(context).width *
                                             1.0,
@@ -698,16 +707,6 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                                     .fontStyle,
                                               ),
                                               letterSpacing: 0.0,
-                                              fontWeight:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .labelMedium
-                                                  .fontWeight,
-                                              fontStyle:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .labelMedium
-                                                  .fontStyle,
                                             ),
                                             hintText:
                                             'Enter your task description',
@@ -728,16 +727,6 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                                     .fontStyle,
                                               ),
                                               letterSpacing: 0.0,
-                                              fontWeight:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .labelMedium
-                                                  .fontWeight,
-                                              fontStyle:
-                                              FlutterFlowTheme.of(
-                                                  context)
-                                                  .labelMedium
-                                                  .fontStyle,
                                             ),
                                             enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
@@ -797,14 +786,6 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                                   .fontStyle,
                                             ),
                                             letterSpacing: 0.0,
-                                            fontWeight:
-                                            FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .fontWeight,
-                                            fontStyle:
-                                            FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .fontStyle,
                                           ),
                                           maxLines: 12,
                                           cursorColor:
@@ -823,6 +804,8 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                           ),
                         ),
                       ),
+
+                      // ── End Date picker ──────────────────────────────────
                       InkWell(
                         splashColor: Colors.transparent,
                         focusColor: Colors.transparent,
@@ -979,7 +962,8 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                         ),
                                       ),
                                       Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                        padding:
+                                        EdgeInsetsDirectional.fromSTEB(
                                             8.0, 7.0, 0.0, 5.0),
                                         child: Column(
                                           mainAxisSize: MainAxisSize.max,
@@ -988,8 +972,8 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                           children: [
                                             Text(
                                               'End Date',
-                                              style:
-                                              FlutterFlowTheme.of(context)
+                                              style: FlutterFlowTheme.of(
+                                                  context)
                                                   .bodyMedium
                                                   .override(
                                                 font: GoogleFonts.inter(
@@ -1002,8 +986,7 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                                       .fontStyle,
                                                 ),
                                                 letterSpacing: 0.0,
-                                                fontWeight:
-                                                FontWeight.w600,
+                                                fontWeight: FontWeight.w600,
                                                 fontStyle:
                                                 FlutterFlowTheme.of(
                                                     context)
@@ -1017,8 +1000,8 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                                     "yMMMd", _model.endDate),
                                                 'Month Day, Year',
                                               ),
-                                              style:
-                                              FlutterFlowTheme.of(context)
+                                              style: FlutterFlowTheme.of(
+                                                  context)
                                                   .bodyMedium
                                                   .override(
                                                 font: GoogleFonts.inter(
@@ -1034,16 +1017,6 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                                       .fontStyle,
                                                 ),
                                                 letterSpacing: 0.0,
-                                                fontWeight:
-                                                FlutterFlowTheme.of(
-                                                    context)
-                                                    .bodyMedium
-                                                    .fontWeight,
-                                                fontStyle:
-                                                FlutterFlowTheme.of(
-                                                    context)
-                                                    .bodyMedium
-                                                    .fontStyle,
                                               ),
                                             ),
                                           ].divide(SizedBox(height: 5.0)),
@@ -1067,43 +1040,19 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                           ),
                         ),
                       ),
+
+                      // ── Submit Button ────────────────────────────────────
                       Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(
                             0.0, 60.0, 0.0, 30.0),
                         child: FFButtonWidget(
                           onPressed: () async {
-                            if ((widget!.taskRef != null) ||
-                                (widget!.taskRefOnGroup != null) ||
-                                (widget!.taskRefOnStatus != null) ||
-                                (widget!.taskRefOnSinglrGroupTask != null)) {
-                              await actions.delAlarm(
-                                    () {
-                                  if (widget!.taskRef != null) {
-                                    return widget!.taskRef!.taskID;
-                                  } else if (widget!.taskRefOnGroup != null) {
-                                    return widget!.taskRefOnGroup!.taskID;
-                                  } else if (widget!.taskRefOnStatus != null) {
-                                    return widget!.taskRefOnStatus!.taskID;
-                                  } else {
-                                    return widget!
-                                        .taskRefOnSinglrGroupTask!.taskID;
-                                  }
-                                }(),
-                              );
+                            if (isEditing) {
+                              // ── UPDATE existing task ──────────────────────
+                              await actions.delAlarm(_getTaskID());
                               await actions.addAlarm(
                                 _model.endDate!,
-                                    () {
-                                  if (widget!.taskRef != null) {
-                                    return widget!.taskRef!.taskID;
-                                  } else if (widget!.taskRefOnGroup != null) {
-                                    return widget!.taskRefOnGroup!.taskID;
-                                  } else if (widget!.taskRefOnStatus != null) {
-                                    return widget!.taskRefOnStatus!.taskID;
-                                  } else {
-                                    return widget!
-                                        .taskRefOnSinglrGroupTask!.taskID;
-                                  }
-                                }(),
+                                _getTaskID(),
                                 _model.textOutPut!,
                                 _model.taskNameTextController.text,
                               );
@@ -1113,38 +1062,10 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                 description:
                                 _model.descriptionTextController.text,
                                 endDate: _model.endDate!.toString(),
-                                taskID: () {
-                                  if (widget!.taskRef != null) {
-                                    return widget!.taskRef!.taskID;
-                                  } else if (widget!.taskRefOnGroup != null) {
-                                    return widget!.taskRefOnGroup!.taskID;
-                                  } else if (widget!.taskRefOnStatus != null) {
-                                    return widget!.taskRefOnStatus!.taskID;
-                                  } else {
-                                    return widget!
-                                        .taskRefOnSinglrGroupTask!.taskID;
-                                  }
-                                }(),
-                                taskStatus: () {
-                                  if (widget!.taskRef != null) {
-                                    return widget!.taskRef!.taskStatus;
-                                  } else if (widget!.taskRefOnGroup != null) {
-                                    return widget!.taskRefOnGroup!.taskStatus;
-                                  } else if (widget!.taskRefOnStatus != null) {
-                                    return widget!.taskRefOnStatus!.taskStatus;
-                                  } else {
-                                    return widget!
-                                        .taskRefOnSinglrGroupTask!.taskStatus;
-                                  }
-                                }(),
+                                taskID: _getTaskID(),
+                                taskStatus: _getTaskStatus(),
                               );
-                              safeSetState(() {
-                                _model.taskNameTextController?.clear();
-                                _model.descriptionTextController?.clear();
-                              });
-                              _model.endDate = null;
-                              _model.textOutPut = null;
-                              safeSetState(() {});
+                              _resetForm(); // ← resets flag + fields cleanly
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
@@ -1158,9 +1079,9 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                   backgroundColor: Color(0xFF8059F0),
                                 ),
                               );
-
                               context.pushNamed(ToDoTaskWidget.routeName);
                             } else {
+                              // ── ADD new task ──────────────────────────────
                               if (_model.formKey.currentState == null ||
                                   !_model.formKey.currentState!.validate()) {
                                 return;
@@ -1178,9 +1099,7 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                   SnackBar(
                                     content: Text(
                                       'End date is empty',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
+                                      style: TextStyle(color: Colors.white),
                                     ),
                                     duration: Duration(milliseconds: 4000),
                                     backgroundColor: Color(0xFF8059F0),
@@ -1198,7 +1117,8 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                 );
                                 await SQLiteManager.instance.addTask(
                                   taskGroup: _model.textOutPut!,
-                                  taskName: _model.taskNameTextController.text,
+                                  taskName:
+                                  _model.taskNameTextController.text,
                                   description:
                                   _model.descriptionTextController.text,
                                   endDate: _model.endDate!.toString(),
@@ -1206,20 +1126,13 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                   taskID: _model.taskId!,
                                   userID: currentUserUid,
                                 );
-                                safeSetState(() {
-                                  _model.taskNameTextController?.clear();
-                                  _model.descriptionTextController?.clear();
-                                });
-                                _model.endDate = null;
-                                _model.textOutPut = null;
-                                safeSetState(() {});
+                                _resetForm(); // ← resets flag + fields cleanly
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
                                       'Your task is added',
                                       style: TextStyle(
-                                        color: Color(0xFFFCFDFF),
-                                      ),
+                                          color: Color(0xFFFCFDFF)),
                                     ),
                                     duration: Duration(milliseconds: 4000),
                                     backgroundColor: Color(0xFF5F33E1),
@@ -1230,10 +1143,9 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
-                                      'End date must be the future date. Today\'s Date is also not allowed.',
+                                      'End date must be a future date. Today\'s date is not allowed.',
                                       style: TextStyle(
-                                        color: Color(0xFFF7F7F7),
-                                      ),
+                                          color: Color(0xFFF7F7F7)),
                                     ),
                                     duration: Duration(milliseconds: 4000),
                                     backgroundColor:
@@ -1242,10 +1154,8 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                                 );
                               }
                             }
-
-                            safeSetState(() {});
                           },
-                          text: 'Add Task',
+                          text: isEditing ? 'Update Task' : 'Add Task',
                           options: FFButtonOptions(
                             width: MediaQuery.sizeOf(context).width * 0.9,
                             height: 40.0,
@@ -1268,12 +1178,6 @@ class _AddTaskWidgetState extends State<AddTaskWidget> {
                               color: Colors.white,
                               fontSize: 18.0,
                               letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .titleSmall
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .titleSmall
-                                  .fontStyle,
                             ),
                             elevation: 4.0,
                             borderRadius: BorderRadius.circular(14.0),

@@ -124,7 +124,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Failed to delete account. Please re-login and try again.',
+            'Failed to delete account. Please re-login and try again.$e',
             style: TextStyle(color: Colors.white),
           ),
           backgroundColor: FlutterFlowTheme.of(context).error,
@@ -170,7 +170,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                             borderRadius: 8.0,
                             buttonSize: 48.0,
                             icon: Icon(
-                              Icons.arrow_back_ios_new_rounded,
+                              FFIcons.karrowLeft,
                               color: FlutterFlowTheme.of(context).primaryText,
                               size: 24.0,
                             ),

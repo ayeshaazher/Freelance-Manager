@@ -1,3 +1,5 @@
+import 'package:alarm/alarm.dart';
+
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/sqlite/sqlite_manager.dart';
 import '/components/color_container_widget.dart';
@@ -528,6 +530,9 @@ class _CalenderWidgetState extends State<CalenderWidget> {
                                                 ) ??
                                                 false;
                                         if (confirmDialogResponse) {
+                                          await Alarm.stop(
+                                              listViewGetAllTasksRow
+                                                  .taskID);
                                           await SQLiteManager.instance
                                               .deleteTasks(
                                             taskID:
@@ -810,6 +815,9 @@ class _CalenderWidgetState extends State<CalenderWidget> {
                                                 ) ??
                                                 false;
                                         if (confirmDialogResponse) {
+                                          await Alarm.stop(
+                                              listViewGetAllTasksbasedOnStatusRow
+                                                  .taskID);
                                           await SQLiteManager.instance
                                               .deleteTasks(
                                             taskID:

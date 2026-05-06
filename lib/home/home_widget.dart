@@ -12,6 +12,8 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'dart:ui';
 import '/index.dart';
+import 'package:alarm/alarm.dart';
+import 'package:alarm/utils/alarm_set.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +25,9 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'home_model.dart';
 export 'home_model.dart';
+
+// Import your alarm ringing screen
+import '../alarm_ringing_screen.dart';
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({super.key});
@@ -39,10 +44,26 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
+  // Stream subscription so we can cancel it on dispose
+  StreamSubscription<AlarmSet>? _alarmSubscription;
+
   @override
   void initState() {
     super.initState();
     _model = createModel(context, () => HomeModel());
+
+    // ✅ Listen for ringing alarms HERE — the navigator is ready at this point
+    _alarmSubscription = Alarm.ringing.listen((AlarmSet alarmSet) {
+      for (final alarm in alarmSet.alarms) {
+        // Use Navigator directly from context — we are inside a live widget
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => AlarmRingingScreen(alarmSettings: alarm),
+            fullscreenDialog: true, // shows as a full modal on iOS
+          ),
+        );
+      }
+    });
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
@@ -53,7 +74,7 @@ class _HomeWidgetState extends State<HomeWidget> {
         taskGroup: 'On Job Tasks',
       );
       _model.onJobProgress =
-          await SQLiteManager.instance.getAllTasksbasedOnGroup(
+      await SQLiteManager.instance.getAllTasksbasedOnGroup(
         userID: currentUserUid,
         taskGroup: 'On Job Tasks',
         taskStatus: 'done',
@@ -63,7 +84,7 @@ class _HomeWidgetState extends State<HomeWidget> {
         taskGroup: 'Freelancer Tasks',
       );
       _model.freelancerProgress =
-          await SQLiteManager.instance.getAllTasksbasedOnGroup(
+      await SQLiteManager.instance.getAllTasksbasedOnGroup(
         userID: currentUserUid,
         taskGroup: 'Freelancer Tasks',
         taskStatus: 'done',
@@ -73,7 +94,7 @@ class _HomeWidgetState extends State<HomeWidget> {
         taskGroup: 'On Home Tasks',
       );
       _model.onHomeProgress =
-          await SQLiteManager.instance.getAllTasksbasedOnGroup(
+      await SQLiteManager.instance.getAllTasksbasedOnGroup(
         userID: currentUserUid,
         taskGroup: 'On Home Tasks',
         taskStatus: 'done',
@@ -83,7 +104,7 @@ class _HomeWidgetState extends State<HomeWidget> {
         taskGroup: 'Study Tasks',
       );
       _model.studyProgress =
-          await SQLiteManager.instance.getAllTasksbasedOnGroup(
+      await SQLiteManager.instance.getAllTasksbasedOnGroup(
         userID: currentUserUid,
         taskGroup: 'Study Tasks',
         taskStatus: 'done',
@@ -97,8 +118,9 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   @override
   void dispose() {
+    // ✅ Always cancel the subscription to avoid memory leaks
+    _alarmSubscription?.cancel();
     _model.dispose();
-
     super.dispose();
   }
 
@@ -179,19 +201,19 @@ class _HomeWidgetState extends State<HomeWidget> {
                             style: FlutterFlowTheme.of(context)
                                 .bodyMedium
                                 .override(
-                                  font: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w600,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  fontSize: 16.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.w600,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
-                                ),
+                              font: GoogleFonts.inter(
+                                fontWeight: FontWeight.w600,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontStyle,
+                              ),
+                              fontSize: 16.0,
+                              letterSpacing: 0.0,
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                            ),
                           ),
                         ),
                       ),
@@ -221,20 +243,20 @@ class _HomeWidgetState extends State<HomeWidget> {
                                   style: FlutterFlowTheme.of(context)
                                       .bodyMedium
                                       .override(
-                                        font: GoogleFonts.inter(
-                                          fontWeight: FontWeight.w500,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                        fontSize: 15.0,
-                                        letterSpacing: 0.0,
-                                        fontWeight: FontWeight.w500,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
+                                    font: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontStyle:
+                                      FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .fontStyle,
+                                    ),
+                                    fontSize: 15.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FontWeight.w500,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontStyle,
+                                  ),
                                 ),
                               ),
                               Icon(
@@ -268,20 +290,20 @@ class _HomeWidgetState extends State<HomeWidget> {
                                   style: FlutterFlowTheme.of(context)
                                       .bodyMedium
                                       .override(
-                                        font: GoogleFonts.inter(
-                                          fontWeight: FontWeight.w500,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                        fontSize: 15.0,
-                                        letterSpacing: 0.0,
-                                        fontWeight: FontWeight.w500,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
+                                    font: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontStyle:
+                                      FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .fontStyle,
+                                    ),
+                                    fontSize: 15.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FontWeight.w500,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontStyle,
+                                  ),
                                 ),
                               ),
                               Icon(
@@ -315,20 +337,20 @@ class _HomeWidgetState extends State<HomeWidget> {
                                   style: FlutterFlowTheme.of(context)
                                       .bodyMedium
                                       .override(
-                                        font: GoogleFonts.inter(
-                                          fontWeight: FontWeight.w500,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                        fontSize: 15.0,
-                                        letterSpacing: 0.0,
-                                        fontWeight: FontWeight.w500,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
+                                    font: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontStyle:
+                                      FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .fontStyle,
+                                    ),
+                                    fontSize: 15.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FontWeight.w500,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontStyle,
+                                  ),
                                 ),
                               ),
                               Icon(
@@ -356,9 +378,8 @@ class _HomeWidgetState extends State<HomeWidget> {
                               await Share.share(
                                 _model.share!.shareURL,
                                 sharePositionOrigin:
-                                    getWidgetBoundingBox(context),
+                                getWidgetBoundingBox(context),
                               );
-
                               safeSetState(() {});
                             },
                             child: Row(
@@ -372,21 +393,21 @@ class _HomeWidgetState extends State<HomeWidget> {
                                     style: FlutterFlowTheme.of(context)
                                         .bodyMedium
                                         .override(
-                                          font: GoogleFonts.inter(
-                                            fontWeight: FontWeight.w500,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontStyle,
-                                          ),
-                                          fontSize: 15.0,
-                                          letterSpacing: 0.0,
-                                          fontWeight: FontWeight.w500,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
+                                      font: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w500,
+                                        fontStyle:
+                                        FlutterFlowTheme.of(context)
+                                            .bodyMedium
+                                            .fontStyle,
+                                      ),
+                                      fontSize: 15.0,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FontWeight.w500,
+                                      fontStyle:
+                                      FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .fontStyle,
+                                    ),
                                   ),
                                 ),
                                 Icon(
@@ -400,8 +421,8 @@ class _HomeWidgetState extends State<HomeWidget> {
                         ),
                       ),
                       Padding(
-                        padding:
-                            EdgeInsetsDirectional.fromSTEB(14.0, 7.0, 6.0, 0.0),
+                        padding: EdgeInsetsDirectional.fromSTEB(
+                            14.0, 7.0, 6.0, 0.0),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -411,7 +432,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                               children: [
                                 Icon(
                                   Theme.of(context).brightness ==
-                                          Brightness.dark
+                                      Brightness.dark
                                       ? Icons.dark_mode_rounded
                                       : Icons.light_mode_rounded,
                                   color: Color(0xFF848485),
@@ -420,26 +441,26 @@ class _HomeWidgetState extends State<HomeWidget> {
                                 SizedBox(width: 8.0),
                                 Text(
                                   Theme.of(context).brightness ==
-                                          Brightness.dark
+                                      Brightness.dark
                                       ? 'Dark Mode'
                                       : 'Light Mode',
                                   style: FlutterFlowTheme.of(context)
                                       .bodyMedium
                                       .override(
-                                        font: GoogleFonts.inter(
-                                          fontWeight: FontWeight.w500,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                        fontSize: 15.0,
-                                        letterSpacing: 0.0,
-                                        fontWeight: FontWeight.w500,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
+                                    font: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w500,
+                                      fontStyle:
+                                      FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .fontStyle,
+                                    ),
+                                    fontSize: 15.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FontWeight.w500,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontStyle,
+                                  ),
                                 ),
                               ],
                             ),
@@ -470,7 +491,6 @@ class _HomeWidgetState extends State<HomeWidget> {
                             GoRouter.of(context).prepareAuthEvent();
                             await authManager.signOut();
                             GoRouter.of(context).clearRedirectLocation();
-
                             context.goNamedAuth(
                                 LetsStartWidget.routeName, context.mounted);
                           },
@@ -486,25 +506,25 @@ class _HomeWidgetState extends State<HomeWidget> {
                             textStyle: FlutterFlowTheme.of(context)
                                 .titleSmall
                                 .override(
-                                  font: GoogleFonts.interTight(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .titleSmall
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleSmall
-                                        .fontStyle,
-                                  ),
-                                  color: FlutterFlowTheme.of(context)
-                                      .primaryBackground,
-                                  fontSize: 18.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
+                              font: GoogleFonts.interTight(
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .titleSmall
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .titleSmall
+                                    .fontStyle,
+                              ),
+                              color: FlutterFlowTheme.of(context)
+                                  .primaryBackground,
+                              fontSize: 18.0,
+                              letterSpacing: 0.0,
+                              fontWeight: FlutterFlowTheme.of(context)
+                                  .titleSmall
+                                  .fontWeight,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .titleSmall
+                                  .fontStyle,
+                            ),
                             elevation: 4.0,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -532,8 +552,8 @@ class _HomeWidgetState extends State<HomeWidget> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
+                      padding: EdgeInsetsDirectional.fromSTEB(
+                          12.0, 0.0, 12.0, 0.0),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -581,21 +601,21 @@ class _HomeWidgetState extends State<HomeWidget> {
                                         style: FlutterFlowTheme.of(context)
                                             .bodyMedium
                                             .override(
-                                              font: GoogleFonts.inter(
-                                                fontWeight: FontWeight.bold,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                              fontSize: 22.0,
-                                              letterSpacing: 0.0,
-                                              fontWeight: FontWeight.bold,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
-                                            ),
+                                          font: GoogleFonts.inter(
+                                            fontWeight: FontWeight.bold,
+                                            fontStyle:
+                                            FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontStyle,
+                                          ),
+                                          fontSize: 22.0,
+                                          letterSpacing: 0.0,
+                                          fontWeight: FontWeight.bold,
+                                          fontStyle:
+                                          FlutterFlowTheme.of(context)
+                                              .bodyMedium
+                                              .fontStyle,
+                                        ),
                                       ),
                                     ),
                                     Padding(
@@ -609,29 +629,21 @@ class _HomeWidgetState extends State<HomeWidget> {
                                           style: FlutterFlowTheme.of(context)
                                               .bodyMedium
                                               .override(
-                                                font: GoogleFonts.inter(
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
-                                                fontSize: 16.0,
-                                                letterSpacing: 0.0,
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
+                                            font: GoogleFonts.inter(
+                                              fontWeight:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .bodyMedium
+                                                  .fontWeight,
+                                              fontStyle:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .bodyMedium
+                                                  .fontStyle,
+                                            ),
+                                            fontSize: 16.0,
+                                            letterSpacing: 0.0,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -658,14 +670,13 @@ class _HomeWidgetState extends State<HomeWidget> {
                       ),
                     ),
                     Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 20.0),
+                      padding: EdgeInsetsDirectional.fromSTEB(
+                          0.0, 20.0, 0.0, 20.0),
                       child: FutureBuilder<List<GetAllTasksRow>>(
                         future: SQLiteManager.instance.getAllTasks(
                           userID: currentUserUid,
                         ),
                         builder: (context, snapshot) {
-                          // Customize what your widget looks like when it's loading.
                           if (!snapshot.hasData) {
                             return Center(
                               child: SizedBox(
@@ -694,34 +705,30 @@ class _HomeWidgetState extends State<HomeWidget> {
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
                                     mainAxisSize: MainAxisSize.max,
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Text(
                                         'You can do iT, almost \nToday\'s tasks are done!',
                                         style: FlutterFlowTheme.of(context)
                                             .bodyMedium
                                             .override(
-                                              font: GoogleFonts.inter(
-                                                fontWeight: FontWeight.w500,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                              color: Colors.white,
-                                              fontSize: 16.0,
-                                              letterSpacing: 0.0,
-                                              fontWeight: FontWeight.w500,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
-                                            ),
+                                          font: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w500,
+                                            fontStyle:
+                                            FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .fontStyle,
+                                          ),
+                                          color: Colors.white,
+                                          fontSize: 16.0,
+                                          letterSpacing: 0.0,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                       FFButtonWidget(
                                         onPressed: () async {
@@ -733,42 +740,34 @@ class _HomeWidgetState extends State<HomeWidget> {
                                           width: 146.0,
                                           height: 30.0,
                                           padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  16.0, 0.0, 16.0, 0.0),
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              16.0, 0.0, 16.0, 0.0),
                                           iconPadding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  0.0, 0.0, 0.0, 0.0),
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              0.0, 0.0, 0.0, 0.0),
                                           color: Colors.white,
                                           textStyle: FlutterFlowTheme.of(
-                                                  context)
+                                              context)
                                               .titleSmall
                                               .override(
-                                                font: GoogleFonts.interTight(
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .titleSmall
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .titleSmall
-                                                          .fontStyle,
-                                                ),
-                                                color: Color(0xFF5F33E1),
-                                                letterSpacing: 0.0,
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .titleSmall
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .titleSmall
-                                                        .fontStyle,
-                                              ),
+                                            font: GoogleFonts.interTight(
+                                              fontWeight:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .titleSmall
+                                                  .fontWeight,
+                                              fontStyle:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .titleSmall
+                                                  .fontStyle,
+                                            ),
+                                            color: Color(0xFF5F33E1),
+                                            letterSpacing: 0.0,
+                                          ),
                                           elevation: 0.0,
                                           borderRadius:
-                                              BorderRadius.circular(15.0),
+                                          BorderRadius.circular(15.0),
                                         ),
                                       ),
                                     ],
@@ -781,7 +780,6 @@ class _HomeWidgetState extends State<HomeWidget> {
                                       taskStatus: 'done',
                                     ),
                                     builder: (context, snapshot) {
-                                      // Customize what your widget looks like when it's loading.
                                       if (!snapshot.hasData) {
                                         return Center(
                                           child: SizedBox(
@@ -789,7 +787,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                             height: 50.0,
                                             child: CircularProgressIndicator(
                                               valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
+                                              AlwaysStoppedAnimation<Color>(
                                                 FlutterFlowTheme.of(context)
                                                     .primary,
                                               ),
@@ -798,7 +796,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                         );
                                       }
                                       final progressBarGetAllTasksbasedOnStatusRowList =
-                                          snapshot.data!;
+                                      snapshot.data!;
 
                                       return CircularPercentIndicator(
                                         percent: (int var1, int var2) {
@@ -816,7 +814,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                         center: Text(
                                           valueOrDefault<String>(
                                             formatNumber(
-                                              (int var1, int var2) {
+                                                  (int var1, int var2) {
                                                 return var2 != 0
                                                     ? var1 / var2
                                                     : 0.0;
@@ -832,30 +830,22 @@ class _HomeWidgetState extends State<HomeWidget> {
                                           style: FlutterFlowTheme.of(context)
                                               .headlineSmall
                                               .override(
-                                                font: GoogleFonts.interTight(
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .headlineSmall
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .headlineSmall
-                                                          .fontStyle,
-                                                ),
-                                                color: Colors.white,
-                                                fontSize: 19.0,
-                                                letterSpacing: 0.0,
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .headlineSmall
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .headlineSmall
-                                                        .fontStyle,
-                                              ),
+                                            font: GoogleFonts.interTight(
+                                              fontWeight:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .headlineSmall
+                                                  .fontWeight,
+                                              fontStyle:
+                                              FlutterFlowTheme.of(
+                                                  context)
+                                                  .headlineSmall
+                                                  .fontStyle,
+                                            ),
+                                            color: Colors.white,
+                                            fontSize: 19.0,
+                                            letterSpacing: 0.0,
+                                          ),
                                         ),
                                       );
                                     },
@@ -870,25 +860,22 @@ class _HomeWidgetState extends State<HomeWidget> {
                     Align(
                       alignment: AlignmentDirectional(-1.0, -1.0),
                       child: Padding(
-                        padding:
-                            EdgeInsetsDirectional.fromSTEB(14.0, 0.0, 0.0, 0.0),
+                        padding: EdgeInsetsDirectional.fromSTEB(
+                            14.0, 0.0, 0.0, 0.0),
                         child: Text(
                           'In Progress',
                           style:
-                              FlutterFlowTheme.of(context).bodyMedium.override(
-                                    font: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w600,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                                    fontSize: 16.0,
-                                    letterSpacing: 0.0,
-                                    fontWeight: FontWeight.w600,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
+                          FlutterFlowTheme.of(context).bodyMedium.override(
+                            font: GoogleFonts.inter(
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                            ),
+                            fontSize: 16.0,
+                            letterSpacing: 0.0,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
@@ -979,12 +966,12 @@ class _HomeWidgetState extends State<HomeWidget> {
                                 updateCallback: () => safeSetState(() {}),
                                 child: InProgressWidget(
                                   taskProgress:
-                                      _model.freelancerProgress!.length,
+                                  _model.freelancerProgress!.length,
                                   onTask: _model.freelancer?.length,
                                   color: Color(0xFFB5E2F6),
                                   tittle: 'Freelancer Tasks',
                                   description:
-                                      'Your freelancer \ntasks progress',
+                                  'Your freelancer \ntasks progress',
                                   progressColor: Color(0xFF6CCCF6),
                                   taskGroup: 'Freelanser Tasks',
                                   action: () async {
@@ -1010,25 +997,22 @@ class _HomeWidgetState extends State<HomeWidget> {
                     Align(
                       alignment: AlignmentDirectional(-1.0, -1.0),
                       child: Padding(
-                        padding:
-                            EdgeInsetsDirectional.fromSTEB(14.0, 0.0, 0.0, 0.0),
+                        padding: EdgeInsetsDirectional.fromSTEB(
+                            14.0, 0.0, 0.0, 0.0),
                         child: Text(
                           'Task Groups',
                           style:
-                              FlutterFlowTheme.of(context).bodyMedium.override(
-                                    font: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w600,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                                    fontSize: 16.0,
-                                    letterSpacing: 0.0,
-                                    fontWeight: FontWeight.w600,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
+                          FlutterFlowTheme.of(context).bodyMedium.override(
+                            font: GoogleFonts.inter(
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                            ),
+                            fontSize: 16.0,
+                            letterSpacing: 0.0,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
@@ -1078,7 +1062,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                     ToDoTaskWidget.routeName,
                                     queryParameters: {
                                       'choiceChipInitial': serializeParam(
-                                        'On  Home Tasks',
+                                        'On Home Tasks',
                                         ParamType.String,
                                       ),
                                     }.withoutNulls,

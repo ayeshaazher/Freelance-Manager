@@ -829,12 +829,26 @@ class _SignupWidgetState extends State<SignupWidget> {
                             return;
                           }
 
+                          // Apple only sends displayName on the very FIRST
+                          // authorization. Every subsequent sign-in returns null.
+                          // Fall back through three options:
+                          //   1. Name Apple provided this session (first sign-in).
+                          //   2. Name already stored in Firebase from a prior
+                          //      session (currentUserDisplayName).
+                          //   3. Email prefix as a last resort.
+                          final appleUserName =
+                          (user.displayName?.trim().isNotEmpty == true)
+                              ? user.displayName!.trim()
+                              : currentUserDisplayName.trim().isNotEmpty
+                              ? currentUserDisplayName.trim()
+                              : (user.email?.split('@').first ?? '');
+
                           context.goNamedAuth(
                             ProfessionsWidget.routeName,
                             context.mounted,
                             queryParameters: {
                               'userName': serializeParam(
-                                user.displayName ?? '',
+                                appleUserName,
                                 ParamType.String,
                               ),
                               'page': serializeParam(

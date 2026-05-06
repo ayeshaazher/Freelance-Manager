@@ -128,125 +128,146 @@ class _ProfessionsWidgetState extends State<ProfessionsWidget> {
                         ),
                       ],
                     ),
-                    // Image picker is only shown for email/password sign-ups.
-                    // Google and Apple already provide a profile photo.
-                    if (!_model.isOAuthSignIn)
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          InkWell(
-                            splashColor: Colors.transparent,
-                            focusColor: Colors.transparent,
-                            hoverColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            onTap: () async {
-                              // Clear the error state once the user taps to pick.
-                              safeSetState(
-                                      () => _model.imageSubmitAttempted = false);
-                              final selectedMedia =
-                              await selectMediaWithSourceBottomSheet(
-                                context: context,
-                                allowPhoto: true,
-                              );
-                              if (selectedMedia != null &&
-                                  selectedMedia.every((m) =>
-                                      validateFileFormat(m.storagePath, context))) {
-                                safeSetState(() =>
-                                _model.isDataUploading_uploadData93f = true);
-                                var selectedUploadedFiles = <FFUploadedFile>[];
+                    // Image picker is always shown.
+                    // For OAuth users (Google/Apple) the provider photo is
+                    // pre-displayed and uploading a new one is optional.
+                    // For email/password users a photo is required.
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () async {
+                            // Clear the error state once the user taps to pick.
+                            safeSetState(
+                                    () => _model.imageSubmitAttempted = false);
+                            final selectedMedia =
+                            await selectMediaWithSourceBottomSheet(
+                              context: context,
+                              allowPhoto: true,
+                            );
+                            if (selectedMedia != null &&
+                                selectedMedia.every((m) =>
+                                    validateFileFormat(m.storagePath, context))) {
+                              safeSetState(() =>
+                              _model.isDataUploading_uploadData93f = true);
+                              var selectedUploadedFiles = <FFUploadedFile>[];
 
-                                try {
-                                  showUploadMessage(
-                                    context,
-                                    'Uploading file...',
-                                    showLoading: true,
-                                  );
-                                  selectedUploadedFiles = selectedMedia
-                                      .map((m) => FFUploadedFile(
-                                    name: m.storagePath.split('/').last,
-                                    bytes: m.bytes,
-                                    height: m.dimensions?.height,
-                                    width: m.dimensions?.width,
-                                    blurHash: m.blurHash,
-                                  ))
-                                      .toList();
-                                } finally {
-                                  ScaffoldMessenger.of(context)
-                                      .hideCurrentSnackBar();
-                                  _model.isDataUploading_uploadData93f = false;
-                                }
-                                if (selectedUploadedFiles.length ==
-                                    selectedMedia.length) {
-                                  safeSetState(() {
-                                    _model.uploadedLocalFile_uploadData93f =
-                                        selectedUploadedFiles.first;
-                                  });
-                                  showUploadMessage(context, 'Success!');
-                                } else {
-                                  safeSetState(() {});
-                                  showUploadMessage(
-                                      context, 'Failed to upload data');
-                                  return;
-                                }
+                              try {
+                                showUploadMessage(
+                                  context,
+                                  'Uploading file...',
+                                  showLoading: true,
+                                );
+                                selectedUploadedFiles = selectedMedia
+                                    .map((m) => FFUploadedFile(
+                                  name: m.storagePath.split('/').last,
+                                  bytes: m.bytes,
+                                  height: m.dimensions?.height,
+                                  width: m.dimensions?.width,
+                                  blurHash: m.blurHash,
+                                ))
+                                    .toList();
+                              } finally {
+                                ScaffoldMessenger.of(context)
+                                    .hideCurrentSnackBar();
+                                _model.isDataUploading_uploadData93f = false;
                               }
-                            },
-                            child: Container(
-                              width: 130.0,
-                              height: 130.0,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(
-                                // Red ring when submitted without selecting an image.
-                                border: (_model.imageSubmitAttempted &&
-                                    !_model.hasImage && currentUserPhoto.isEmpty)
-                                    ? Border.all(
-                                  color:
-                                  FlutterFlowTheme.of(context).error,
-                                  width: 2.0,
-                                )
-                                    : null,
-                                shape: BoxShape.circle,
+                              if (selectedUploadedFiles.length ==
+                                  selectedMedia.length) {
+                                safeSetState(() {
+                                  _model.uploadedLocalFile_uploadData93f =
+                                      selectedUploadedFiles.first;
+                                });
+                                showUploadMessage(context, 'Success!');
+                              } else {
+                                safeSetState(() {});
+                                showUploadMessage(
+                                    context, 'Failed to upload data');
+                                return;
+                              }
+                            }
+                          },
+                          child: Container(
+                            width: 130.0,
+                            height: 130.0,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: BoxDecoration(
+                              // Red ring when submitted without selecting an image.
+                              border: (_model.imageSubmitAttempted &&
+                                  !_model.hasImage && currentUserPhoto.isEmpty)
+                                  ? Border.all(
+                                color:
+                                FlutterFlowTheme.of(context).error,
+                                width: 2.0,
+                              )
+                                  : null,
+                              shape: BoxShape.circle,
+                            ),
+                            child:
+                                () {
+                              final bytes = _model.uploadedLocalFile_uploadData93f.bytes;
+                              if (bytes == null || bytes.isEmpty) {
+                                return currentUserPhoto.isNotEmpty?Image.network(currentUserPhoto):Image.asset("assets/images/blank-profile-picture.webp");
+                              }
+                              try {
+                                return Image.memory(
+                                  bytes,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return currentUserPhoto.isNotEmpty?Image.network(currentUserPhoto):Image.asset("assets/images/blank-profile-picture.webp");
+                                  },
+                                );
+                              } catch (_) {
+                                return currentUserPhoto.isNotEmpty?Image.network(currentUserPhoto):Image.asset("assets/images/blank-profile-picture.webp");
+                              }
+                            }(),
+                          ),
+                        ),
+                        // Image validation error message (email sign-ups only)
+                        if (_model.imageSubmitAttempted && !_model.hasImage && currentUserPhoto.isEmpty)
+                          Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(0.0, 6.0, 0.0, 0.0),
+                            child: Text(
+                              'Please select a profile picture',
+                              style: FlutterFlowTheme.of(context).bodySmall.override(
+                                font: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w400,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .bodySmall
+                                      .fontStyle,
+                                ),
+                                color: FlutterFlowTheme.of(context).error,
+                                fontSize: 12.0,
+                                letterSpacing: 0.0,
                               ),
-                              child:
-                                  () {
-                                final bytes = _model.uploadedLocalFile_uploadData93f.bytes;
-                                if (bytes == null || bytes.isEmpty) {
-                                  return currentUserPhoto.isNotEmpty?Image.network(currentUserPhoto):Image.asset("assets/images/blank-profile-picture.webp");
-                                }
-                                try {
-                                  return Image.memory(
-                                    bytes,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return currentUserPhoto.isNotEmpty?Image.network(currentUserPhoto):Image.asset("assets/images/blank-profile-picture.webp");
-                                    },
-                                  );
-                                } catch (_) {
-                                  return currentUserPhoto.isNotEmpty?Image.network(currentUserPhoto):Image.asset("assets/images/blank-profile-picture.webp");
-                                }
-                              }(),
                             ),
                           ),
-                          // Image validation error message
-                          if (_model.imageSubmitAttempted && !_model.hasImage && currentUserPhoto.isEmpty)
-                            Padding(
-                              padding: EdgeInsetsDirectional.fromSTEB(0.0, 6.0, 0.0, 0.0),
-                              child: Text(
-                                'Please select a profile picture',
-                                style: FlutterFlowTheme.of(context).bodySmall.override(
-                                  font: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w400,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodySmall
-                                        .fontStyle,
-                                  ),
-                                  color: FlutterFlowTheme.of(context).error,
-                                  fontSize: 12.0,
-                                  letterSpacing: 0.0,
+                        // "Optional" label for OAuth users so they know
+                        // they can keep the provider photo or change it.
+                        if (_model.isOAuthSignIn)
+                          Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(0.0, 6.0, 0.0, 0.0),
+                            child: Text(
+                              'Tap to change photo (optional)',
+                              style: FlutterFlowTheme.of(context).bodySmall.override(
+                                font: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w400,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .bodySmall
+                                      .fontStyle,
                                 ),
+                                color: FlutterFlowTheme.of(context).secondaryText,
+                                fontSize: 12.0,
+                                letterSpacing: 0.0,
                               ),
                             ),
-                        ],
-                      ),
+                          ),
+                      ],
+                    ),
                     Padding(
                       padding:
                       EdgeInsetsDirectional.fromSTEB(0.0, 30.0, 0.0, 15.0),
@@ -279,7 +300,9 @@ class _ProfessionsWidgetState extends State<ProfessionsWidget> {
                                   .labelMedium
                                   .fontStyle,
                             ),
-                            hintText: 'Username',
+                            hintText: _model.isOAuthSignIn
+                                ? 'Username (optional)'
+                                : 'Username',
                             hintStyle: FlutterFlowTheme.of(context)
                                 .labelMedium
                                 .override(
